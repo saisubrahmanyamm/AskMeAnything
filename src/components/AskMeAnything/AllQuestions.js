@@ -23,7 +23,7 @@ function AllQuestions() {
         </div>
       </div>
       <div className="question-answer">
-        <Link>This is Question title</Link>
+        <Link to = "/question">This is Question title</Link>
 
         {/* <a href=>{data.title}</a> */}
 

@@ -8,6 +8,8 @@ import { login, logout, selectUser } from './features/userSlice';
 import { useSelector} from "react-redux";
 import { useDispatch } from 'react-redux';
 import { auth } from './firebase';
+import Question from './components/AddQuestion/Question';
+import ViewQuestions from './components/ViewQuestions';
 
 function App() {
   const user = useSelector(selectUser);
@@ -58,9 +60,10 @@ function App() {
         <Header />
         <Switch>
           <Route exact path="/auth" component={Auth} />
-          <PrivateRoute exact path="/" component={AskMeAnything} />
+          <Route exact path="/" component={AskMeAnything} />
+          <PrivateRoute exact path="/addQuestion" component={Question} />
           {/* <PrivateRoute exact path="/add-question" component={AddQuestion} /> */}
-          {/* <PrivateRoute exact path="/question" component={ViewQuestion} /> */}
+          <Route exact path="/question" component={ViewQuestions} />
         </Switch>
         </Router>
       

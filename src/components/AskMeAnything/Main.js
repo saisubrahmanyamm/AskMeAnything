@@ -11,7 +11,7 @@ function Main() {
       <div className="main-container">
         <div className="main-top">
           <h2>All Questions</h2>
-          <Link to="/add-question">
+          <Link to="/addQuestion">
             <button>Ask Question</button>
           </Link>
 
