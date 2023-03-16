@@ -44,16 +44,17 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-top: 15px;
   }
   
   .question-answer > a {
     color: #0151f0d8;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     margin-bottom: 10px;
   }
   .question-answer > a:hover {
     color: #1649b1d8;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     margin-bottom: 10px;
   }
   

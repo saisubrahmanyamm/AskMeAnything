@@ -4,11 +4,11 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // ES6
 import "./question.css";
 import Editor from "react-quill/lib/index";
-// import axios from "axios";
+import axios from "axios";
 import { TagsInput } from "react-tag-input-component";
 import { selectUser } from "../../features/userSlice";
 
-// import { useHistory } from "react-router-dom";
+ import { useHistory } from "react-router-dom";
 
 function Question() {
   const user = useSelector(selectUser);
@@ -55,6 +55,36 @@ function Question() {
     "image",
     "video",
   ];
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [tag, setTag] = useState([]);
+  const history = useHistory();
+
+  const handleQuill = (value) => {
+    setBody(value);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (title !== "" && body !== "") {
+      const bodyJSON = {
+        title: title,
+        body: body,
+        tag: JSON.stringify(tag),
+        user: user,
+      };
+      await axios
+        .post("/api/question", bodyJSON)
+        .then((res) => {
+          // console.log(res.data);
+          alert("Question added successfully");
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
   return (
        <div className="add-question">
       <div className="add-question-container">
@@ -71,7 +101,8 @@ function Question() {
                   person
                 </small>
                 <input
-                  value=""
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   type="text"
                   placeholder="e.g Is there an R function for finding teh index of an element in a vector?"
                 />
@@ -85,7 +116,9 @@ function Question() {
                   question
                 </small>
                 <ReactQuill
-                  value= ""
+                  value={body}
+                  onChange={handleQuill}
+                  modules={Editor.modules}
                   className="react-quill"
                   theme="snow"
                 />
@@ -97,20 +130,15 @@ function Question() {
                 <small>
                   Add up to 5 tags to describe what your question is about
                 </small>
-                {/* <input
-                  value={tag}
-                  onChange={(e) => setTag(e.target.value)}
-                  data-role="tagsinput"
-                  data-tag-trigger="Space"
-                  type="text"
-                  placeholder="e.g. (asp.net-mvc php react json)"
-                /> */}
+                
 
                 <TagsInput
-                  value=""
+                  value={tag}
+                  onChange={setTag}
                   name="fruits"
                   placeHolder="press enter to add new tag"
                 />
+
 
                 {/* <ChipsArray /> */}
               </div>
@@ -118,7 +146,8 @@ function Question() {
           </div>
         </div>
 
-        <button  className="button">
+        
+        <button onClick={handleSubmit} className="button">
           Add your question
         </button>
       </div>

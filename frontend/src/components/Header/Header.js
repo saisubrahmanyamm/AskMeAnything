@@ -26,6 +26,10 @@ function Header() {
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
+
+    const logout = (event) => {
+    
+    };
     const user = useSelector(selectUser); 
     return(
         <header>
@@ -56,12 +60,12 @@ function Header() {
                     onClose={() => setAnchorEl(null)}
                 >
                     <MenuItem onClick={() => console.log()}>
-                    <PersonIcon style = {{ marginRight: "10px"}}/>{user?.displayName}
+                    <PersonIcon style = {{ marginRight: "10px"}}/>{user?.displayName || user?.email.split('@')[0]}
                     </MenuItem>
                     <MenuItem onClick={() => console.log('Logout')}><SettingsIcon style = {{ marginRight: "10px"}}/>Settings</MenuItem>
                 </Menu>
                 <HelpIcon />
-                <LogoutIcon onClick={() => auth.signOut()}/>
+                <Link to ="/auth"><LogoutIcon onClick= {() => auth.signOut()}/></Link>
             </div>
             </div>
 
