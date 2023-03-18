@@ -7,12 +7,12 @@ import ReactHtmlParser from "react-html-parser";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 
-function AllQuestions({data}) {
+function UserQuestions({data}) {
  
   function truncate(str, n) {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   }
-  console.log(data);
+  console.log("qwert",data);
   const user = useSelector(selectUser);
   const [link, setLink] = useState(`/question?q=${data?._id}`);
  var userData ;
@@ -25,7 +25,8 @@ function myTest(){
  console.log("hi",userData);
  setLink(`/question?q=${data?._id}&u=${userData}`);
 }
-  let tags = JSON.parse(data?.tags[0]);
+
+ let tags = JSON.parse(data?.tags[0]);
   return (
     <div className="all-questions">
     <div className="all-questions-container">
@@ -84,4 +85,4 @@ function myTest(){
   );
 }
 
-export default AllQuestions
+export default UserQuestions

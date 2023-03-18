@@ -14,7 +14,11 @@ const answerSchema = new mongoose.Schema({
   comment_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Comments",
-  },
+  },  
+  correctAnswer: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 module.exports = mongoose.model("Answers", answerSchema);

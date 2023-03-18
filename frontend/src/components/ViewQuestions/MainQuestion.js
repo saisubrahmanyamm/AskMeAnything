@@ -11,52 +11,65 @@ import ReactHtmlParser from "react-html-parser";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
+import CheckIcon from '@mui/icons-material/Check';
 
 // import { stringAvatar } from "../../utils/Avatar";
 import './css/index.css';
 
 function MainQuestion() {
-
+  const [loading, setLoading] = useState(true);
   let search = window.location.search;
   const params = new URLSearchParams(search);
   const id = params.get("q");
+  const [currentUser, setCurrentUser] = useState(params.get("u"));
   const [voteCount, setVoteCount] = useState([]);
-  
-  const [answerVoteCount, setAnswerVoteCount] = useState([]); 
+  const [questionUser, setQuestionUser] = useState();
+  const [answerVoteCount, setAnswerVoteCount] = useState([]);
   const [ansVoteCounts, setAnsVoteCounts] = useState({});
+  const [correctAnsCount, setCorrectAnsCount] = useState({});
   const [questionData, setQuestionData] = useState();
   const [answer, setAnswer] = useState("");
   const [show, setShow] = useState(false);
   const [comment, setComment] = useState("");
-  // const [comments, setComments] = useState([]);
   const user = useSelector(selectUser);
+  // var sameUser = false;
+  const [showButton, setShowButton] = useState(false);
   var temp = {};
+  var tempCorrectAns = {};
   const handleQuill = (value) => {
     setAnswer(value);
   };
-
   useEffect(() => {
     async function getFunctionDetails() {
-      
+
       await axios
         .get(`/api/question/${id}`)
         .then(res => {
           setQuestionData(res.data[0]);
-          setVoteCount( res.data[0].voteDetails[0] ? res.data[0].voteDetails[0].voteCount : 0);
-          temp = {...ansVoteCounts};
+          console.log(res.data[0]);
+          setVoteCount(res.data[0].voteDetails[0] ? res.data[0].voteDetails[0].voteCount : 0);
+          setQuestionUser(res.data[0]?.user?.email);
+
+          temp = { ...ansVoteCounts };
           for (let i = 0; i < res.data[0].answerDetails.length; i++) {
-            temp[res.data[0].answerDetails[i]._id] = res.data[0].answerDetails[i].votesCount ;
+            temp[res.data[0].answerDetails[i]._id] = res.data[0].answerDetails[i].votesCount;
           }
           setAnsVoteCounts(temp);
-         
+          tempCorrectAns = { ...correctAnsCount };
+          for (let i = 0; i < res.data[0].answerDetails.length; i++) {
+            tempCorrectAns[res.data[0].answerDetails[i]._id] = res.data[0].answerDetails[i].correctAnswer;
+          }
+          console.log("adey", tempCorrectAns);
+          setCorrectAnsCount(tempCorrectAns);
+
         })
         .catch((err) => console.log(err));
     }
-    
-     
-      
-     getFunctionDetails();
-    
+
+
+
+    getFunctionDetails();
+
   }, [id]);
 
   async function getUpdatedAnswer() {
@@ -120,13 +133,42 @@ function MainQuestion() {
       })
       .catch((err) => console.log(err));
   };
-  
 
-  //const [isAnsUpvoted, setAnsIsUpvoted] = useState(false);
-  //const [isAnsDownvoted, setAnsIsDownvoted] = useState(false);
-  
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [ansCorrectStatus, setAnsCorrectStatus] = useState({});
+  const handleMarkCorrect = async (ansId,email) => {
+    axios
+      .put(`/api/answer/${ansId}`, { correctAnswer: true })
+      .then((response) => {
+
+        const newCorrectAns = { ...correctAnsCount };
+        const newCorrectAnsStatus = { ...ansCorrectStatus };
+        newCorrectAns[ansId] = response.data.correctAnswer;
+        setCorrectAnsCount(newCorrectAns);
+        newCorrectAnsStatus[ansId] = {
+          isCorrected: response.data.isCorrected,
+        };
+        setAnsCorrectStatus(newCorrectAnsStatus);
+
+        // console.log(response.data);
+      })
+      axios
+      .put(`/api/user/${email}`, { points: 10 })
+      .then((response) => {
+
+        console.log("userdata resp",response.data);
+
+        // console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+
+
   const [ansVoteStatuses, setAnsVoteStatuses] = useState({});
-  const handleAnsVote = async (isUpvote,ansId) => {
+  const handleAnsVote = async (isUpvote, ansId) => {
     const body = {
       user: user,
     };
@@ -147,13 +189,13 @@ function MainQuestion() {
         const newVoteCounts = { ...ansVoteCounts };
         const newVoteStatuses = { ...ansVoteStatuses };
         newVoteCounts[ansId] = response.data.votes;
-         setAnsVoteCounts(newVoteCounts);
-      newVoteStatuses[ansId] = {
-        isUpvoted: response.data.isUpvoted,
-        isDownvoted: response.data.isDownvoted,
-      };
-      setAnsVoteStatuses(newVoteStatuses);
-     
+        setAnsVoteCounts(newVoteCounts);
+        newVoteStatuses[ansId] = {
+          isUpvoted: response.data.isUpvoted,
+          isDownvoted: response.data.isDownvoted,
+        };
+        setAnsVoteStatuses(newVoteStatuses);
+
         // setAnswerVoteCount(response.data.votes);
         // setAnsIsUpvoted(response.data.isUpvoted);
         // setAnsIsDownvoted(response.data.isDownvoted);
@@ -207,7 +249,7 @@ function MainQuestion() {
             <div className="all-questions-left">
               <div className="all-options">
 
-             
+
                 <div>
                   <button onClick={() => handleVote(true)} disabled={isUpvoted}>
                     {isUpvoted ? 'Upvoted' : 'Upvote'}
@@ -311,16 +353,17 @@ function MainQuestion() {
               >
                 <div className="all-questions-left">
                   <div className="all-options">
-                  <div>
-                  <button onClick={() => handleAnsVote(true,_q._id)} disabled={ansVoteStatuses[_q._id]?.isUpvoted}>
-                  {ansVoteStatuses[_q._id]?.isUpvoted ? "Upvoted" : "Upvote"}
-                  </button>
-                  <p className="arrow">{ansVoteCounts[_q._id] ? ansVoteCounts[_q._id] : 0}</p>
+                    <div>
+                      <button onClick={() => handleAnsVote(true, _q._id)} disabled={ansVoteStatuses[_q._id]?.isUpvoted}>
+                        {ansVoteStatuses[_q._id]?.isUpvoted ? "Upvoted" : "Upvote"}
+                      </button>
+                      <p className="arrow">{ansVoteCounts[_q._id] ? ansVoteCounts[_q._id] : 0}</p>
 
-                  <button onClick={() => handleAnsVote(false,_q._id)} disabled={ansVoteStatuses[_q._id]?.isDownvoted}>
-                  {ansVoteStatuses[_q._id]?.isDownvoted ? "Downvoted" : "Downvote"}
-                  </button>
-                </div>
+                      <button onClick={() => handleAnsVote(false, _q._id)} disabled={ansVoteStatuses[_q._id]?.isDownvoted}>
+                        {ansVoteStatuses[_q._id]?.isDownvoted ? "Downvoted" : "Downvote"}
+                      </button>
+                      {correctAnsCount[_q._id] ? (<CheckIcon style={{ fontSize: "35px", }} />) : (<p> </p>)}
+                    </div>
 
 
                   </div>
@@ -328,6 +371,12 @@ function MainQuestion() {
                 <div className="question-answer">
                   {ReactHtmlParser(_q.answer)}
                   <div className="author">
+                    {/* {correctAnsCount[_q._id] || currentUser === questionUser?(<button onClick={() =>handleMarkCorrect(_q._id)}>Mark It Correct</button>):(<p></p>)} */}
+                    {correctAnsCount[_q._id] ? <p></p> :
+                      currentUser === questionUser ?
+                        <button onClick={() => handleMarkCorrect(_q._id,_q.user.email)}>Mark It Correct</button> :
+                        <p></p>
+                    }
                     <small>
                       asked {new Date(_q.created_at).toLocaleString()}
                     </small>
@@ -345,7 +394,7 @@ function MainQuestion() {
             </>
           ))}
         </div>
-        
+
       </div>
       <div className="main-answer">
         <h3

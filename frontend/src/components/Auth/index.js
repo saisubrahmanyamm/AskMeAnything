@@ -5,6 +5,9 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithP
 import { auth, provider } from '../../firebase';
 import { fontSize } from '@mui/system';
 import { useHistory } from "react-router-dom";
+import { displayName } from 'react-quill';
+import axios from "axios";
+
 
 
 
@@ -18,6 +21,7 @@ function Index() {
   const [occupation, setOccupation] = useState("");
   const [dateofbirth, setDateofBirth] = useState("");
   const [error, setError] = useState("");
+  var user = {};
 
   function validateEmail(email) {
     const reg = /^([A-Za-z0-9_\-.])+@([A-Za-z0-9_\-.])+\.([A-Za-z]{2,4})$/;
@@ -31,7 +35,14 @@ function Index() {
       console.log(res);
       history.push("/");
       setLoading(false);
-     
+      user = {
+        displayName  :res.user.displayName ? res.user.displayName : String(res.user.email).split('@')[0],
+        email : res.user.email,
+        uid: res.user.uid,
+        photoURL : res.user.photoURL ? res.user.photoURL : "No Photo"
+      };
+      console.log("user details",user)
+      createUser(user);
 
     })
   }
@@ -72,7 +83,15 @@ function Index() {
     } else {
       createUserWithEmailAndPassword(auth, email, password, occupation, dateofbirth)
         .then((res) => {
-          console.log(res);
+         // console.log(res);
+          user = {
+            displayName  :res.user.displayName ? res.user.displayName : String(res.user.email).split('@')[0],
+            email : res.user.email,
+            uid: res.user.uid,
+            photoURL : res.user.photoURL ? res.user.photoURL : "No Photo"
+          };
+         // console.log("user details",user)
+          createUser(user);
           // Navigate("/");
           history.push("/");
           setLoading(false);
@@ -82,6 +101,14 @@ function Index() {
           setError(error.message);
           setLoading(false);
         });
+    }
+  };
+  const createUser = async (user) => {
+    try {
+      const res = await axios.post('/api/user', user);
+      console.log("user api",res.data);
+    } catch (err) {
+      console.error(err);
     }
   };
 

@@ -10,7 +10,8 @@ import { useDispatch } from 'react-redux';
 import { auth } from './firebase';
 import Question from './components/AddQuestion/Question';
 import ViewQuestions from './components/ViewQuestions';
-
+import ViewUserQuestions from './components/ViewUserQuestions';
+import ViewUsers from './components/ViewUsers';
 function App() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -62,8 +63,10 @@ function App() {
           <Route exact path="/auth" component={Auth} />
           <Route exact path="/" component={AskMeAnything} />
           <PrivateRoute exact path="/addQuestion" component={Question} />
+          <PrivateRoute exact path="/userquestions" component={ViewUserQuestions} />
           {/* <PrivateRoute exact path="/add-question" component={AddQuestion} /> */}
           <Route exact path="/question" component={ViewQuestions} />
+          <Route exact path="/users" component= {ViewUsers} />
         </Switch>
         </Router>
       
