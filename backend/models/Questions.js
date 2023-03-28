@@ -13,6 +13,7 @@ const questionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Comments",
   },
+ 
 });
 
 module.exports = mongoose.model("Questions", questionSchema);

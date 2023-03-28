@@ -40,21 +40,6 @@ router.post('/:questionId/upvote', async (req, res) => {
 
 // Downvote a question
 router.post('/:questionId/downvote', async (req, res) => {
-//   try {
-//     const voteCount = await VoteCount.findOneAndUpdate(
-//       { questionId: req.params.questionId },
-//       { $inc: { voteCount: -1 } },
-//       { user: req.body.user},
-//       { new: true, upsert: true }
-//     );
-//     const isUpvoted = false;
-//     const isDownvoted = true;
-//     const votes = (voteCount.voteCount) - 1;
-//     res.json({ voteCount, isUpvoted, isDownvoted, votes });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send('Server error');
-//   }
 
 try {
     const voteCount = await VoteCount.findOneAndUpdate(

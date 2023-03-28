@@ -1,6 +1,7 @@
 import { Avatar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import HistoryIcon from "@mui/icons-material/History";
 import ReactQuill from "react-quill";
 //import Editor from "react-quill/lib/toolbar";
@@ -15,6 +16,7 @@ import CheckIcon from '@mui/icons-material/Check';
 
 // import { stringAvatar } from "../../utils/Avatar";
 import './css/index.css';
+import { Cursor } from "mongoose";
 
 function MainQuestion() {
   const [loading, setLoading] = useState(true);
@@ -63,6 +65,12 @@ function MainQuestion() {
           setCorrectAnsCount(tempCorrectAns);
 
         })
+      await axios
+        .get(`/api/bookmark/${id}/${currentUser}`)
+        .then(res => {
+          setIsBookmarked(res.data.exists);
+          console.log("book", res);
+        })
         .catch((err) => console.log(err));
     }
 
@@ -104,6 +112,39 @@ function MainQuestion() {
       .catch((err) => console.log(err));
   };
 
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const handleBookmark = async (isBookmarked) => {
+    console.log("aghd", isBookmarked);
+    if (!isBookmarked) {
+      const body = {
+        question_id: id,
+        user: user,
+      };
+      let url = `/api/bookmark`;
+
+      // console.log(user);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      await axios
+        .post(url, body, config)
+        .then(response => {
+          // alert("Answer added successfully");
+          console.log("nenu", response);
+          setIsBookmarked(response);
+
+        })
+        .catch((err) => console.log(err));
+    } else {
+      alert("Already Bookmarked");
+    }
+  };
+
+
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [isDownvoted, setIsDownvoted] = useState(false);
   const handleVote = async (isUpvote) => {
@@ -136,7 +177,7 @@ function MainQuestion() {
 
   const [isCorrect, setIsCorrect] = useState(false);
   const [ansCorrectStatus, setAnsCorrectStatus] = useState({});
-  const handleMarkCorrect = async (ansId,email) => {
+  const handleMarkCorrect = async (ansId, email) => {
     axios
       .put(`/api/answer/${ansId}`, { correctAnswer: true })
       .then((response) => {
@@ -152,11 +193,11 @@ function MainQuestion() {
 
         // console.log(response.data);
       })
-      axios
+    axios
       .put(`/api/user/${email}`, { points: 10 })
       .then((response) => {
 
-        console.log("userdata resp",response.data);
+        console.log("userdata resp", response.data);
 
         // console.log(response.data);
       })
@@ -251,16 +292,31 @@ function MainQuestion() {
 
 
                 <div>
-                  <button onClick={() => handleVote(true)} disabled={isUpvoted}>
-                    {isUpvoted ? 'Upvoted' : 'Upvote'}
-                  </button>
-                  <p className="arrow">{voteCount}</p>
-                  <button onClick={() => handleVote(false)} disabled={isDownvoted}>
-                    {isDownvoted ? 'Downvoted' : 'Downvote'}
-                  </button>
-                </div>
-                <BookmarkIcon />
+                  <span
+                    style={{
+                      fontSize: "35px",
+                      cursor: "pointer",
+                      color: isUpvoted ? "rgb(84 83 83)" : "rgba(0, 0, 0, 0.25)",
+                      pointerEvents: isUpvoted ? "none" : "auto"
+                    }}
+                    onClick={() => handleVote(true)}
+                  >
+                    ▲
+                  </span>
 
+                  <p className="arrow">{voteCount}</p>
+                  <span style={{
+                    fontSize: "35px",
+                    cursor: "pointer",
+                    color: isDownvoted ? "rgb(84 83 83)" : "rgba(0, 0, 0, 0.25)",
+                    pointerEvents: isDownvoted ? "none" : "auto"
+                  }} onClick={() => handleVote(false)} disabled={isDownvoted}>
+                    {/* {isDownvoted ? 'Downvoted' : 'Downvote'} */}
+                    ▼
+                  </span>
+                </div>
+                {/* <button onClick={() => handleBookmark()}><BookmarkIcon /></button> */}
+                {isBookmarked ? (<BookmarkIcon onClick={() => handleBookmark(isBookmarked)} style={{ cursor: 'pointer', fontSize: '30px',  }} />) : (<BookmarkBorderIcon style={{ cursor: 'pointer', fontSize: '30px', }} onClick={() => handleBookmark(isBookmarked)} />)}
 
               </div>
             </div>
@@ -354,15 +410,44 @@ function MainQuestion() {
                 <div className="all-questions-left">
                   <div className="all-options">
                     <div>
-                      <button onClick={() => handleAnsVote(true, _q._id)} disabled={ansVoteStatuses[_q._id]?.isUpvoted}>
-                        {ansVoteStatuses[_q._id]?.isUpvoted ? "Upvoted" : "Upvote"}
-                      </button>
+                      {/* <p style={{
+                        fontSize: "30px",
+                        cursor: "pointer"
+                      }} onClick={() => handleAnsVote(true, _q._id)} disabled={ansVoteStatuses[_q._id]?.isUpvoted}>
+                        {ansVoteStatuses[_q._id]?.isUpvoted ? '▲' : '△'}
+                      </p> */}
+
+                      <span
+                        style={{
+                          fontSize: "30px",
+                          cursor: "pointer",
+                          color: ansVoteStatuses[_q._id]?.isUpvoted ? "rgb(84 83 83)" : "rgba(0, 0, 0, 0.25)",
+                          pointerEvents: ansVoteStatuses[_q._id]?.isUpvoted ? "none" : "auto"
+                        }}
+                        onClick={() => handleAnsVote(true, _q._id)}
+                      >
+                        ▲
+                      </span>
+
                       <p className="arrow">{ansVoteCounts[_q._id] ? ansVoteCounts[_q._id] : 0}</p>
 
-                      <button onClick={() => handleAnsVote(false, _q._id)} disabled={ansVoteStatuses[_q._id]?.isDownvoted}>
-                        {ansVoteStatuses[_q._id]?.isDownvoted ? "Downvoted" : "Downvote"}
-                      </button>
-                      {correctAnsCount[_q._id] ? (<CheckIcon style={{ fontSize: "35px", }} />) : (<p> </p>)}
+                      {/* <button style={{
+                        fontSize: "30px",
+                        cursor: "pointer"}} onClick={() => handleAnsVote(false, _q._id)} disabled={ansVoteStatuses[_q._id]?.isDownvoted}>
+                        {ansVoteStatuses[_q._id]?.isDownvoted ? '▼': '▽'}
+                      </button> */}
+                      <span
+                        style={{
+                          fontSize: "35px",
+                          cursor: "pointer",
+                          color: ansVoteStatuses[_q._id]?.isDownvoted ? "rgb(84 83 83)" : "rgba(0, 0, 0, 0.25)",
+                          pointerEvents: ansVoteStatuses[_q._id]?.isDownvoted ? "none" : "auto"
+                        }}
+                        onClick={() => handleAnsVote(false, _q._id)}
+                      >
+                        ▼
+                      </span>
+                      {correctAnsCount[_q._id] ? (<CheckIcon style={{ fontSize: "50px",paddingBottom: "12px",paddingTop:'7px', color: "green" }} />) : (<p> </p>)}
                     </div>
 
 
@@ -370,11 +455,12 @@ function MainQuestion() {
                 </div>
                 <div className="question-answer">
                   {ReactHtmlParser(_q.answer)}
+                  
                   <div className="author">
                     {/* {correctAnsCount[_q._id] || currentUser === questionUser?(<button onClick={() =>handleMarkCorrect(_q._id)}>Mark It Correct</button>):(<p></p>)} */}
                     {correctAnsCount[_q._id] ? <p></p> :
                       currentUser === questionUser ?
-                        <button onClick={() => handleMarkCorrect(_q._id,_q.user.email)}>Mark It Correct</button> :
+                        <button onClick={() => handleMarkCorrect(_q._id, _q.user.email)}>Mark It Correct</button> :
                         <p></p>
                     }
                     <small>
@@ -390,6 +476,7 @@ function MainQuestion() {
                     </div>
                   </div>
                 </div>
+                
               </div>
             </>
           ))}

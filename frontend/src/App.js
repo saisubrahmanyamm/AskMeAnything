@@ -12,6 +12,7 @@ import Question from './components/AddQuestion/Question';
 import ViewQuestions from './components/ViewQuestions';
 import ViewUserQuestions from './components/ViewUserQuestions';
 import ViewUsers from './components/ViewUsers';
+import Bookmarks from './components/Bookmarks';
 function App() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ function App() {
           <Route exact path="/" component={AskMeAnything} />
           <PrivateRoute exact path="/addQuestion" component={Question} />
           <PrivateRoute exact path="/userquestions" component={ViewUserQuestions} />
+          <PrivateRoute exact path="/bookmarks" component={Bookmarks} />
           {/* <PrivateRoute exact path="/add-question" component={AddQuestion} /> */}
           <Route exact path="/question" component={ViewQuestions} />
           <Route exact path="/users" component= {ViewUsers} />

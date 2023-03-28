@@ -85,7 +85,7 @@
     border-radius: 3px;
     outline: none;
   }
-  #registerBtn{
+  .registerBtn{
              margin-top: 10px;
                 text-align : center;
                 color: #0095ff;
