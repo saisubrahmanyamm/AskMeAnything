@@ -13,13 +13,15 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../features/userSlice";
 import CheckIcon from '@mui/icons-material/Check';
-
+import badWords from 'bad-words';
 // import { stringAvatar } from "../../utils/Avatar";
 import './css/index.css';
 import { Cursor } from "mongoose";
 
 function MainQuestion() {
   const [loading, setLoading] = useState(true);
+  const filter = new badWords();
+
   var toolbarOptions = [
     ["bold", "italic", "underline", "strike"], // toggled buttons
     ["blockquote", "code-block"],
@@ -78,6 +80,7 @@ function MainQuestion() {
   const [show, setShow] = useState(false);
   const [comment, setComment] = useState("");
   const user = useSelector(selectUser);
+
   // var sameUser = false;
   const [showButton, setShowButton] = useState(false);
   var temp = {};
@@ -134,6 +137,9 @@ function MainQuestion() {
 
   // console.log(questionData);
   const handleSubmit = async () => {
+    if (filter.isProfane(answer)) {
+      alert('Please do not use bad language');
+    } else {
     const body = {
       question_id: id,
       answer: answer,
@@ -154,6 +160,7 @@ function MainQuestion() {
         getUpdatedAnswer();
       })
       .catch((err) => console.log(err));
+    }
   };
 
 
@@ -291,6 +298,9 @@ function MainQuestion() {
 
   const handleComment = async () => {
     if (comment !== "") {
+      if (filter.isProfane(comment)) {
+        alert('Please do not use bad language');
+      } else {
       const body = {
         question_id: id,
         comment: comment,
@@ -302,6 +312,7 @@ function MainQuestion() {
         getUpdatedAnswer();
         // console.log(res.data);
       });
+    }
     }
   }
 

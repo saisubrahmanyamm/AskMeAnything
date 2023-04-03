@@ -7,11 +7,14 @@ import Editor from "react-quill/lib/index";
 import axios from "axios";
 import { TagsInput } from "react-tag-input-component";
 import { selectUser } from "../../features/userSlice";
+import badWords from 'bad-words';
+
 
  import { useHistory } from "react-router-dom";
 
 function Question() {
   const user = useSelector(selectUser);
+  const filter = new badWords();
   var toolbarOptions = [
     ["bold", "italic", "underline", "strike"], // toggled buttons
     ["blockquote", "code-block"],
@@ -61,14 +64,20 @@ function Question() {
   const [body, setBody] = useState("");
   const [tag, setTag] = useState([]);
   const history = useHistory();
+  // const [inputValue, setInputValue] = useState('');
 
+ 
   const handleQuill = (value) => {
     setBody(value);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+   
+   
     if (title !== "" && body !== "") {
+      if (filter.isProfane(title) || filter.isProfane(body) || filter.isProfane(JSON.stringify(tag))) {
+        alert('Please do not use bad language');
+      } else {
       const bodyJSON = {
         title: title,
         body: body,
@@ -86,6 +95,7 @@ function Question() {
           console.log(err);
         });
     }
+  }
   };
   return (
        <div className="add-question">
