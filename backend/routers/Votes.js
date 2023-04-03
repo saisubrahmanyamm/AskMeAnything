@@ -24,7 +24,7 @@ router.post('/:questionId/upvote', async (req, res) => {
             voteCount: newVoteCount,
             isUpvoted: true,
             isDownvoted: false,
-           votes: (newVoteCount.voteCount) + 1
+           votes: (newVoteCount.voteCount)
           });
         }  else{
           const isUpvoted = true;
@@ -59,7 +59,7 @@ try {
         voteCount: newVoteCount,
         isUpvoted: false,
         isDownvoted: true,
-        votes : (newVoteCount.voteCount) -1
+        votes : (newVoteCount.voteCount)
       });
     } else{
       const isUpvoted = false;

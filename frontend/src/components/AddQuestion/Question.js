@@ -55,6 +55,8 @@ function Question() {
     "image",
     "video",
   ];
+  Editor.container= 'div';
+
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [tag, setTag] = useState([]);

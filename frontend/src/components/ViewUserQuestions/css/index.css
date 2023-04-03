@@ -37,6 +37,6 @@
   } */
   pre {
     display: flex;
-    width: 90px;
+    /* width: 90px; */
     flex-wrap: wrap;
   }

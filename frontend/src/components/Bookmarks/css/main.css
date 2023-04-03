@@ -23,13 +23,14 @@
 .main-top > h2 {
   font-weight: 400;
   font-size: 25px;
-  color: rgba(0, 0, 0, 0.8);
+  color: black;
 }
 
 button {
   padding: 10px;
-  background-color: #0095ff;
-  color: #fff;
+  background-color: #182b27;
+  color: white;
+  font-weight: bold;
   border: 2px solid #007cd446;
   outline: none;
   border-radius: 3px;
@@ -71,12 +72,12 @@ button {
 .main-filter-item {
   display: flex;
   padding: 5px;
-  border: 1px solid #0095ff;
+  border: 1px solid rgba(0, 0, 0, 0.534);
   border-radius: 3px;
   background-color: #00ccff17;
   font-size: small;
   align-items: center;
-  color: #007cd4;
+  color: rgba(0, 0, 0, 0.534); 
   cursor: pointer;
 }
 
@@ -96,7 +97,7 @@ button {
 
 pre {
   display: flex;
-  width: 90px;
+  /* width: 90px; */
   flex-wrap: wrap;
 }
 
@@ -105,6 +106,6 @@ pre {
     /* display: flex;
   max-width: 700px;
   padding: 30px 10px; */
-    flex: 0.7;
+    flex: 0.85;
   }
 }
