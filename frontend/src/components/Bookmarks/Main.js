@@ -8,7 +8,6 @@ import BookmarkQuestions from "./BookmarkQuestions";
 function Main({questions }) {
  // const [dataList, setDataList] = useState({});
   const [sortNewest, setSortNewest] = useState(true);
-console.log("edi main",questions)
   const sortedData = questions ?[...questions].sort((a, b) => {
     if (sortNewest) {
       return new Date(b.created_at) - new Date(a.created_at);

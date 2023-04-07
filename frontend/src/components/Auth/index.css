@@ -1,19 +1,23 @@
 .auth {
-    display: flex;
-    flex-direction: column;
-    /* width: 100vw; */
-    height: 80vh;
-    padding: 30px 0;
-    background-color: #eee;
-  }
-  
-  .auth-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-  }
+  display: flex;
+  justify-content: flex-end; /* aligns .auth-container to the right side */
+  align-items: center; /* centers .auth-container vertically */
+  width: 100vw;
+  height: 80vh;
+  padding: 30px 0;
+  background-image: url('./Home.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%; /* adjust the width as needed */
+  align-items: center; /* centers .auth-container horizontally */
+  justify-content: center; /* centers .auth-container vertically */
+}
   
   .auth-container > p {
     margin-bottom: 10px;
@@ -50,10 +54,10 @@
   img {
     width: 20px;
   }
-  
+
   .auth-login {
     display: flex;
-    margin: 20px 0;
+    margin: -40px 0px 20px 0px;
     width: 300px;
   }
   
@@ -88,7 +92,5 @@
   .registerBtn{
              margin-top: 10px;
                 text-align : center;
-                color: #0095ff;
-                text-decoration: underline;
                 cursor: pointer;
   }

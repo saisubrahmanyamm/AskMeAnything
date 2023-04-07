@@ -40,10 +40,7 @@ function Header() {
             </div>
 
             <div className = "header-middle">
-             <div className = "header-search-container">
-                <SearchIcon></SearchIcon>
-                <input type = "text" placeholder="Search..." />
-             </div>
+            
             </div>
             <div className = "header-right">
             <div className = "header-right-container">

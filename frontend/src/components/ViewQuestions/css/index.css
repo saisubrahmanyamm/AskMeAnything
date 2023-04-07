@@ -40,3 +40,43 @@
     /* width: 90px; */
     flex-wrap: wrap;
   }
+  .alert {
+    /* position: relative; */
+    padding: 15px 25px;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.50rem; 
+    right :1rem;
+    position: fixed;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+  }
+  .alert .close {
+    position: absolute;
+    /* right: 20px; */
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+    color: #F70000;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-left: 10px;
+  }
+  
+ 
+  .alert.success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  .alert.danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  .alert.warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }

@@ -65,7 +65,7 @@ function MainQuestion() {
     "image",
     "video",
   ];
-  Editor.container= 'div';
+  Editor.container = 'div';
   let search = window.location.search;
   const params = new URLSearchParams(search);
   const id = params.get("q");
@@ -78,6 +78,10 @@ function MainQuestion() {
   const [questionData, setQuestionData] = useState();
   const [answer, setAnswer] = useState("");
   const [show, setShow] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [showCommentAlert, setShowCommentAlert] = useState(false);
+  const [showDangerAlert, setShowDangerAlert] = useState(false);
+
   const [comment, setComment] = useState("");
   const user = useSelector(selectUser);
 
@@ -140,26 +144,26 @@ function MainQuestion() {
     if (filter.isProfane(answer)) {
       alert('Please do not use bad language');
     } else {
-    const body = {
-      question_id: id,
-      answer: answer,
-      user: user,
-    };
-    console.log(user);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+      const body = {
+        question_id: id,
+        answer: answer,
+        user: user,
+      };
+      console.log(user);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
 
-    await axios
-      .post("/api/answer", body, config)
-      .then(() => {
-        alert("Answer added successfully");
-        setAnswer("");
-        getUpdatedAnswer();
-      })
-      .catch((err) => console.log(err));
+      await axios
+        .post("/api/answer", body, config)
+        .then(() => {
+          alert("Answer added successfully");
+          setAnswer("");
+          getUpdatedAnswer();
+        })
+        .catch((err) => console.log(err));
     }
   };
 
@@ -278,6 +282,7 @@ function MainQuestion() {
       .post(url, body, config)
       .then(response => {
         // alert("Answer added successfully");
+        setShowAlert(true);
         const newVoteCounts = { ...ansVoteCounts };
         const newVoteStatuses = { ...ansVoteStatuses };
         newVoteCounts[ansId] = response.data.votes;
@@ -301,23 +306,35 @@ function MainQuestion() {
       if (filter.isProfane(comment)) {
         alert('Please do not use bad language');
       } else {
-      const body = {
-        question_id: id,
-        comment: comment,
-        user: user,
-      };
-      await axios.post(`/api/comment/${id}`, body).then((res) => {
-        setComment("");
-        setShow(false);
-        getUpdatedAnswer();
-        // console.log(res.data);
-      });
-    }
+        const body = {
+          question_id: id,
+          comment: comment,
+          user: user,
+        };
+        await axios.post(`/api/comment/${id}`, body).then((res) => {
+          setComment("");
+          setShow(false);
+          getUpdatedAnswer();
+          // console.log(res.data);
+        });
+      }
     }
   }
 
   return (
     <div className="main">
+      {showAlert && <div class="alert success">
+        Answer posted successfully!
+        <span class="close" onClick={() => setShowAlert(false)}>×</span>
+      </div>}
+      {showCommentAlert && <div class="alert success">
+        Comment posted successfully!
+        <span class="close" onClick={() => setShowCommentAlert(false)}>×</span>
+      </div>}
+      {showDangerAlert && <div class="alert danger">
+        Please don't use bad language!!
+        <span class="close" onClick={() => setShowDangerAlert(false)}>×</span>
+      </div>}
       <div className="main-container">
         <div className="main-top">
           <h2 className="main-question">{questionData?.title}</h2>
@@ -371,7 +388,7 @@ function MainQuestion() {
                   </span>
                 </div>
                 {/* <button onClick={() => handleBookmark()}><BookmarkIcon /></button> */}
-                {isBookmarked ? (<BookmarkIcon onClick={() => handleBookmark(isBookmarked)} style={{ cursor: 'pointer', fontSize: '30px',  }} />) : (<BookmarkBorderIcon style={{ cursor: 'pointer', fontSize: '30px', }} onClick={() => handleBookmark(isBookmarked)} />)}
+                {isBookmarked ? (<BookmarkIcon onClick={() => handleBookmark(isBookmarked)} style={{ cursor: 'pointer', fontSize: '30px', }} />) : (<BookmarkBorderIcon style={{ cursor: 'pointer', fontSize: '30px', }} onClick={() => handleBookmark(isBookmarked)} />)}
 
               </div>
             </div>
@@ -502,7 +519,7 @@ function MainQuestion() {
                       >
                         ▼
                       </span>
-                      {correctAnsCount[_q._id] ? (<CheckIcon style={{ fontSize: "50px",paddingBottom: "12px",paddingTop:'7px', color: "green" }} />) : (<p> </p>)}
+                      {correctAnsCount[_q._id] ? (<CheckIcon style={{ fontSize: "50px", paddingBottom: "12px", paddingTop: '7px', color: "green" }} />) : (<p> </p>)}
                     </div>
 
 
@@ -510,7 +527,7 @@ function MainQuestion() {
                 </div>
                 <div className="question-answer">
                   {ReactHtmlParser(_q.answer)}
-                  
+
                   <div className="author">
                     {/* {correctAnsCount[_q._id] || currentUser === questionUser?(<button onClick={() =>handleMarkCorrect(_q._id)}>Mark It Correct</button>):(<p></p>)} */}
                     {correctAnsCount[_q._id] ? <p></p> :
@@ -531,7 +548,7 @@ function MainQuestion() {
                     </div>
                   </div>
                 </div>
-                
+
               </div>
             </>
           ))}

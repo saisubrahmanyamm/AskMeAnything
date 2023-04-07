@@ -22,13 +22,14 @@ function AllQuestions({data}) {
  }, 3000);
 function myTest(){
  userData = user.email;
- console.log("hi",userData);
  setLink(`/question?q=${data?._id}&u=${userData}`);
 }
   let tags = JSON.parse(data?.tags[0]);
   return (
+    
     <div className="all-questions">
     <div className="all-questions-container">
+    
       <div className="all-questions-left">
         <div className="all-options">
           <div className="all-option">

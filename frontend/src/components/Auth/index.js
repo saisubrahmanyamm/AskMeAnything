@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import './index.css';
-import GoogleIcon from '@mui/icons-material/Google';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup,sendPasswordResetEmail } from 'firebase/auth';
 import { auth, provider } from '../../firebase';
 // import firebase from 'firebase/app';
-import { fontSize } from '@mui/system';
 import { useHistory } from "react-router-dom";
-import { displayName } from 'react-quill';
 import axios from "axios";
+import Home from './Home.png';
+
 
 
 
@@ -20,8 +19,6 @@ function Index() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [dateofbirth, setDateofBirth] = useState("");
   const [error, setError] = useState("");
   var user = {};
 
@@ -163,7 +160,7 @@ function Index() {
 
                 <button onClick={handleRegister} disabled={loading} style={{ marginTop: "10px" }}>{loading ? 'Registering..!' : 'Register'}</button>
                 <p onClick={() => setRegister('login') } className="registerBtn">Login?</p>
-            <p onClick={() => setRegister('forgot') } style = {{cursor: 'pointer', textDecoration : 'underline', textAlign: 'center'}}>Forgot Password?</p>
+            <p onClick={() => setRegister('forgot') } style = {{cursor: 'pointer',color: '#0095ff', textAlign: 'center'}}>Forgot Password?</p>
               </>
             ) : register == "forgot" ? (
               <>
@@ -189,7 +186,7 @@ function Index() {
                 </div>
                 <button onClick={handleSignin} disabled={loading} style={{ marginTop: "10px" }}>{loading ? 'Signing In...!' : 'Login'}</button>
             <p onClick={() => setRegister('register')} className ="registerBtn">Register</p>
-            <p onClick={() => setRegister('forgot') } style = {{cursor: 'pointer', textDecoration : 'underline', textAlign: 'center'}}>Forgot Password?</p>
+            <p onClick={() => setRegister('forgot') } style = {{cursor: 'pointer',color: '#0095ff', textAlign: 'center'}}>Forgot Password?</p>
               </>
             ) : (<div></div>)
             }

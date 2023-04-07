@@ -19,6 +19,7 @@
     "firebase": "^9.17.1",
     "profanity-filter": "^0.2.1",
     "react": "^17.0.2",
+    "react-bootstrap": "^2.7.2",
     "react-dom": "^17.0.2",
     "react-html-parser": "^2.0.2",
     "react-quill": "^2.0.0",

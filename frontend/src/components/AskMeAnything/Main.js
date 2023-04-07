@@ -3,11 +3,14 @@ import AllQuestions from './AllQuestions';
 import './css/main.css';
 import FilterList from '@mui/icons-material/FilterList';
 import {Link} from 'react-router-dom';
+import SearchIcon from "@mui/icons-material/Search";
 
 
-function Main({questions }) {
+function Main({questions}) {
  // const [dataList, setDataList] = useState({});
   const [sortNewest, setSortNewest] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
 
   const sortedData = questions ?[...questions].sort((a, b) => {
     if (sortNewest) {
@@ -16,9 +19,21 @@ function Main({questions }) {
       return new Date(a.created_at) - new Date(b.created_at);
     }
   }):[];
+  const filteredData = sortedData.filter((q) =>
+  q.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  q.user.displayName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  q.body.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  JSON.stringify(q.tags).toLowerCase().includes(searchQuery.toLowerCase())
+
+  );
+
   return (
     <div className="main">
       <div className="main-container">
+      <div className = "header-search-container">
+                <SearchIcon></SearchIcon>
+                <input type = "text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+             </div>
         <div className="main-top">
           <h2>All Questions</h2>
           <Link to="/addQuestion">
@@ -30,7 +45,7 @@ function Main({questions }) {
           
         </div>
         <div className="main-desc">
-            <p>{questions && questions.length} Questions</p>
+        <p>{filteredData.length} Questions</p>
           <div className="main-filter">
             <div className="main-tabs">
             <div className="main-filter-item">
@@ -48,11 +63,13 @@ function Main({questions }) {
           </div>
         </div>
         <div className="questions">
-          {sortedData?.map((_q,i) => (
+        {filteredData.length === 0 ? (
+            <p>No results found</p>
+          ) : ( filteredData?.map((_q,i) => (
             <div className="question" key={i}>
               <AllQuestions data={_q} />
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </div>
